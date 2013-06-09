@@ -6,6 +6,7 @@
 import os
 import sys
 import shutil
+import time
 
 tests = {}
 tests['ruby'] = {'syntax_file': '$VIMRUNTIME/syntax/ruby.vim', 'file':  'languages/ruby/test-file1.rb', 'extra_setup_lines' : [] }
@@ -34,12 +35,28 @@ def run_test(test, f):
     fx.close()
 
     results = {}
-    for engine in range(1,3):
+    for engine in range(0,3):
         report_file = "syntime-%s-%s.txt" % (test['name'], engine)
-        cmd = "vim -u NONE -U NONE -N -g --nofork -c 'source test.vim' -c 'call AutomaticTest(%d, %s, %s, %s, %s, %s)' " % (engine, s(extra_setup_lines_file), s(test['file']), s(test['syntax_file']), s(outfile), s(report_file) )
-        print "running cmd: %s" % cmd
+
+        # does not show regressions:
+        # cmd = "vim -u NONE -U NONE -N -g --nofork -c 'source test.vim' -c 'call AutomaticTest(%d, %s, %s, %s, %s, %s)' " % (engine, s(extra_setup_lines_file), s(test['file']), s(test['syntax_file']), s(outfile), s(report_file) )
+        # print "running cmd: %s" % cmd
+
+        cmd = [
+	"vim -u NONE -U NONE -N %s" % test['file'],
+	"--cmd 'set regexpengine=%d'" % engine,
+	"-c 'syn on'",
+        "-c 'source %s'" % test['syntax_file'],
+	"-c 'for x in range(1,10)| redraw! |endfor'",
+	"-c 'quit'"]
+        cmd = " ".join(cmd)
+        print cmd
+        start = time.time()
         os.system(cmd)
-        result = open(outfile,"r").readlines()[0].strip()
+        end = time.time()
+
+        result = end - start
+
         results[engine] = result
         f.write("%s %d %s\n" % (test['name'], engine, result))
 

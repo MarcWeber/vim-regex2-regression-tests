@@ -31,7 +31,7 @@ fun! TestSynOnOff(syntax_file)
     syn off
     syn on
     exec 'source '.a:syntax_file
-    redraw
+    redraw!
   endfor
   " keep syn on so that you can visually control that everything is fine
 endf
@@ -40,13 +40,13 @@ fun! TestScrolling(syntax_file)
   syn on
   exec 'source '.a:syntax_file
 
-  for i in range(1, 2000 / line('$'))
+  for i in range(1, 1000 / line('$'))
     normal gg
     " scroll down
     while line('.') < line('$')
       exec "normal \<c-d>"
       normal j
-      redraw
+      redraw!
     endwhile
   endfor
 endf
