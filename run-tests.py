@@ -36,7 +36,7 @@ def run_test(test, f):
     results = {}
     for engine in range(1,3):
         report_file = "syntime-%s-%s.txt" % (test['name'], engine)
-        cmd = "vim -u NONE -U NONE -N -g --nofork -c 'source test.vim' -c 'call AutomaticTest(%d, %s, %s, %s, %s, %s)' -c 'quit!'" % (engine, s(extra_setup_lines_file), s(test['file']), s(test['syntax_file']), s(outfile), s(report_file) )
+        cmd = "vim -u NONE -U NONE -N -g --nofork -c 'source test.vim' -c 'call AutomaticTest(%d, %s, %s, %s, %s, %s)' " % (engine, s(extra_setup_lines_file), s(test['file']), s(test['syntax_file']), s(outfile), s(report_file) )
         print "running cmd: %s" % cmd
         os.system(cmd)
         result = open(outfile,"r").readlines()[0].strip()
